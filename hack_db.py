@@ -2,7 +2,15 @@ import random
 from datacenter.models import Schoolkid, Lesson, Subject, Mark, Commendation
 
 
-def fix_marks(schoolkid):
+def fix_marks(name):
+    try:
+        schoolkid = Schoolkid.objects.get(full_name__contains=name)
+    except Schoolkid.MultipleObjectsReturned:
+        print('Найдено несколько учеников с таким именем. Пожалуйста, уточните запрос и попробуйте заново.')
+        exit()
+    except Schoolkid.DoesNotExist:
+        print('Указанный пользователь не существует. Отправьте запрос заново.')
+        exit()
     bad_marks = Mark.objects.filter(schoolkid__full_name=schoolkid.full_name, points__in=[2, 3])
     for bad_mark in bad_marks:
         good_mark = random.randint(4, 5)
@@ -11,7 +19,15 @@ def fix_marks(schoolkid):
     return bad_marks.count()
 
 
-def remove_chastisements(schoolkid):
+def remove_chastisements(name):
+    try:
+       schoolkid = Schoolkid.objects.get(full_name__contains=name)
+    except Schoolkid.MultipleObjectsReturned:
+        print('Найдено несколько учеников с таким именем. Пожалуйста, уточните запрос и попробуйте заново.')
+        exit()
+    except Schoolkid.DoesNotExist:
+        print('Указанный пользователь не существует. Отправьте запрос заново.')
+        exit()
     child_chastisements = Chastisement.objects.filter(schoolkid__full_name=schoolkid.full_name)
     return child_chastisements.delete()
 
@@ -30,6 +46,7 @@ def create_commendation(name, subject):
     commendation = Commendation.objects.create(text='Хвалю!', created=lesson.date, schoolkid=schoolkid,
                                                subject=lesson.subject, teacher=lesson.teacher)
     return commendation
+
 
 praises = ['Молодец!', 'Отлично!', 'Хорошо!', 'Гораздо лучше, чем я ожидал!', 'Ты меня приятно удивил!',
          'Великолепно!', 'Прекрасно!', 'Ты меня очень обрадовал!', 'Именно этого я давно ждал от тебя!',
