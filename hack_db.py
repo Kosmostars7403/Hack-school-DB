@@ -1,5 +1,5 @@
 import random
-from datacenter.models import Schoolkid, Lesson, Subject, Mark, Commendation
+from datacenter.models import Schoolkid, Lesson, Subject, Mark, Commendation, Chastisement
 
 
 def fix_marks(name):
@@ -42,9 +42,13 @@ def create_commendation(name, subject):
         print('Указанный пользователь не существует. Отправьте запрос заново.')
         exit()
     praise = random.choice(praises)
-    lesson = Lesson.objects.filter(group_letter='А', year_of_study=6, subject__title=subject).order_by('-date').first()
-    commendation = Commendation.objects.create(text=praise', created=lesson.date, schoolkid=schoolkid,
+    try:
+        lesson = Lesson.objects.filter(group_letter='А', year_of_study=6, subject__title=subject).order_by('-date').first()
+        commendation = Commendation.objects.create(text='Хвалю!', created=lesson.date, schoolkid=schoolkid,
                                                subject=lesson.subject, teacher=lesson.teacher)
+    except AttributeError:
+        print('Указанная дисциплина не найдена, попробуйте ввести еще раз!')
+        exit()
     return commendation
 
 
