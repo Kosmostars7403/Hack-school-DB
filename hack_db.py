@@ -16,7 +16,7 @@ def fix_marks(name):
         good_mark = random.randint(4, 5)
         bad_mark.points = good_mark
         bad_mark.save()
-    return bad_marks.count()
+    return Mark.objects.filter(schoolkid__full_name=schoolkid.full_name, points__in=[2, 3])
 
 
 def remove_chastisements(name):
@@ -43,7 +43,7 @@ def create_commendation(name, subject):
         exit()
     praise = random.choice(praises)
     lesson = Lesson.objects.filter(group_letter='А', year_of_study=6, subject__title=subject).order_by('-date').first()
-    commendation = Commendation.objects.create(text='Хвалю!', created=lesson.date, schoolkid=schoolkid,
+    commendation = Commendation.objects.create(text=praise', created=lesson.date, schoolkid=schoolkid,
                                                subject=lesson.subject, teacher=lesson.teacher)
     return commendation
 
